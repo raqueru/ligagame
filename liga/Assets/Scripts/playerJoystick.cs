@@ -8,13 +8,13 @@ public class playerJoystick : MonoBehaviour
     public float speed;
     public FixedJoystick fixedJoystick;
     public Rigidbody2D rb;
-    bool isGrounded;
-    float jumpForce = 10;
+    public bool isGrounded;
+    public float jumpForce = 10;
     Animator animator;
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -23,11 +23,22 @@ public class playerJoystick : MonoBehaviour
         {
             rb.velocity= new Vector2 (rb.velocity.x,jumpForce);
             isGrounded = false;
+            animator.SetBool("isJumping", !isGrounded);
+
 
         }
-        animator.SetBool("isJumping", !isGrounded);
+        FlipSprite();
+     }
+    private void FlipSprite() {
+        if (fixedJoystick.Horizontal > 0)
+        {
+            transform.localScale = new Vector3(0.5f, 0.5f, 1f);
+        }
+        else if (fixedJoystick.Horizontal < 0)
+        {
+            transform.localScale = new Vector3(-0.5f, 0.5f, 1f);
+        }
     }
-
     public void FixedUpdate()
     {
         Vector3 direction = Vector3.forward * fixedJoystick.Vertical + Vector3.right * fixedJoystick.Horizontal;
